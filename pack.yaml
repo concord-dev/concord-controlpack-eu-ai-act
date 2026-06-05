@@ -1,0 +1,17 @@
+apiVersion: concord.dev/v1
+kind: ControlPack
+metadata:
+  id: eu-ai-act
+  name: eu-ai-act
+  version: v0.1.0
+  framework_label: EU AI Act
+spec:
+  controls:
+    - EU-AIAct-Article11
+    - EU-AIAct-Article13
+    - EU-AIAct-Article14
+  evidence_sources:
+    - source: github
+      version: ">=v0.1.0,<v1.0.0"
+    - source: mlflow
+      version: ">=v0.1.0,<v1.0.0"

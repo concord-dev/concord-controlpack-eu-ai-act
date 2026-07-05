@@ -1,0 +1,78 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: EU-AIAct-Article15
+  name: accuracy-robustness-cybersecurity
+  title: Every high-risk AI system meets accuracy, robustness and cybersecurity thresholds
+  framework: eu-ai-act
+  category: Provider obligations
+  severity: high
+  tags:
+    - ai
+    - eu-ai-act
+    - accuracy
+    - robustness
+    - cybersecurity
+    - article-15
+  owners:
+    - team: ai-governance
+
+spec:
+  description: |
+    EU AI Act Article 15 requires high-risk AI systems to achieve an
+    appropriate level of accuracy, robustness and cybersecurity, and to
+    perform consistently across their lifecycle. Concord binds every
+    high-risk production model to a recorded evaluation run (Weights &
+    Biases) and checks it meets the accuracy threshold and carries
+    robustness-testing evidence, and that the model declares a
+    cybersecurity assessment (an MLflow cybersecurity_assessment tag).
+
+  rationale: |
+    Article 15 is where "the model works" becomes an auditable claim.
+    A number in a slide deck is not evidence; a versioned evaluation run
+    with accuracy + robustness metrics, tied to the exact model version in
+    production, is. Pinning the check to the eval run that produced the
+    deployed version — and refusing to pass a high-risk model with no
+    robustness testing or no cybersecurity assessment — makes the quality
+    bar continuous and release-gated rather than a launch-day snapshot.
+
+  evidence:
+    - id: model_registry
+      source: mlflow
+      type: model_registry
+      fixture: ../tests/fixtures/models-with-security.json
+      params:
+        tracking_uri: ${env.MLFLOW_TRACKING_URI}
+
+    - id: eval_runs
+      source: wandb
+      type: model_registry
+      fixture: ../tests/fixtures/wandb-eval-pass.json
+      params:
+        entity: ${env.WANDB_ENTITY}
+
+  policy:
+    engine: rego
+    package: concord.eu_ai_act.article_15
+    file: ../policies/article_15.rego
+
+  remediation:
+    runbook: docs/remediation/eu-ai-act-article-15.md
+    auto_fix: false
+    estimated_effort: 1d
+
+  mappings:
+    eu_ai_act:
+      - "Article-15"
+      - "Annex-IV"
+    iso42001:
+      - "8.3"
+      - "9.1"
+    nist_ai_rmf:
+      - "MEASURE-2.5"
+      - "MEASURE-2.7"
+      - "MANAGE-2.2"
+
+  status: stable
+  blocking: true

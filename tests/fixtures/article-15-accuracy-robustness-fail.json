@@ -1,0 +1,33 @@
+{
+  "model_registry": {
+    "tracking_uri": "https://mlflow.example.com",
+    "fetched_at": "2026-06-20T10:00:00Z",
+    "models": [
+      {
+        "name": "fraud-detector",
+        "version": "5",
+        "production": true,
+        "eu_ai_act_tier": "high",
+        "cybersecurity_assessment": "Threat model + third-party pen-test 2026-Q2; adversarial input filtering deployed.",
+        "owner": "ml-platform",
+        "stage": "Production"
+      }
+    ]
+  },
+  "eval_runs": {
+    "tracking_uri": "https://api.wandb.ai",
+    "entity": "concord-ml",
+    "fetched_at": "2026-06-20T10:00:00Z",
+    "models": [
+      {
+        "name": "fraud-detector",
+        "project": "fraud",
+        "production": true,
+        "version": "5",
+        "accuracy": 0.62,
+        "robustness_tested": false,
+        "adversarial_tested": false
+      }
+    ]
+  }
+}

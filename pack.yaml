@@ -13,6 +13,7 @@ spec:
     - EU-AIAct-Article12
     - EU-AIAct-Article13
     - EU-AIAct-Article14
+    - EU-AIAct-Article15
   evidence_sources:
     - source: github
       version: ">=v0.1.0,<v1.0.0"

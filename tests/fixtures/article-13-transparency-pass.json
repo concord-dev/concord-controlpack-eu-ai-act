@@ -1,0 +1,41 @@
+{
+  "model_registry": {
+    "tracking_uri": "https://mlflow.example.com",
+    "fetched_at": "2026-05-14T10:00:00Z",
+    "models": [
+      {
+        "name": "fraud-detector",
+        "version": "5",
+        "production": true,
+        "eu_ai_act_tier": "high",
+        "evaluation_report": "s3://concord-reports/fraud-detector-v5.json",
+        "last_evaluated_at": "2026-04-15T00:00:00Z",
+        "public_model_card_url": "https://concord.example.com/model-cards/fraud-detector",
+        "owner": "ml-platform",
+        "stage": "Production"
+      },
+      {
+        "name": "spam-classifier",
+        "version": "2",
+        "production": true,
+        "eu_ai_act_tier": "limited",
+        "owner": "trust-and-safety",
+        "stage": "Production"
+      }
+    ]
+  },
+  "model_cards": {
+    "scanned_paths": [
+      "docs/ai/model-cards"
+    ],
+    "fetched_at": "2026-05-14T10:00:00Z",
+    "docs": [
+      {
+        "path": "docs/ai/model-cards/fraud-detector.md",
+        "model": "fraud-detector",
+        "intended_use": "Detect fraudulent payment patterns in real-time.",
+        "limitations": "Performance degrades on transaction patterns from regions not represented in training data."
+      }
+    ]
+  }
+}

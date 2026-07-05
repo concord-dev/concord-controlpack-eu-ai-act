@@ -1,0 +1,26 @@
+{
+  "scanned_paths": [
+    "docs/ai/datasets"
+  ],
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "docs": [
+    {
+      "path": "docs/ai/datasets/creditcard-txns-2025.md",
+      "dataset": "creditcard-txns-2025",
+      "reviewer": "dana@example.com",
+      "provenance": "Internal transaction warehouse, 2024-01 to 2025-06, DPA-covered.",
+      "bias_evaluation": "Reweighted by region + card tier; disparate-impact ratio 0.91 (>0.8 threshold).",
+      "representativeness": "Covers all six operating regions in production traffic proportions.",
+      "known_limitations": "Under-samples prepaid cards (<2% of volume)."
+    },
+    {
+      "path": "docs/ai/datasets/synthetic-fraud-aug.md",
+      "dataset": "synthetic-fraud-aug",
+      "reviewer": "dana@example.com",
+      "provenance": "CTGAN-generated augmentation seeded from labelled fraud cases; generator versioned in repo.",
+      "bias_evaluation": "Held-out fairness check confirms no new demographic skew vs. base set.",
+      "representativeness": "Balances the 0.3% positive class without altering feature marginals.",
+      "known_limitations": "Synthetic records excluded from post-market drift baselines."
+    }
+  ]
+}

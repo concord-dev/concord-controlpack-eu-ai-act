@@ -1,0 +1,79 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: EU-AIAct-Article10
+  name: data-governance-datasets
+  title: Every high-risk AI system's training data has a governed, bias-checked datasheet
+  framework: eu-ai-act
+  category: Provider obligations
+  severity: high
+  tags:
+    - ai
+    - eu-ai-act
+    - data-governance
+    - article-10
+  owners:
+    - team: ai-governance
+
+spec:
+  description: |
+    EU AI Act Article 10 requires that high-risk AI systems be developed
+    on the basis of training, validation and testing data sets that meet
+    quality criteria: relevant data-governance practices covering design
+    choices, provenance/collection, examination for bias, and
+    representativeness. Concord requires every high-risk production model
+    to declare its training datasets (an MLflow training_datasets tag) and
+    every named dataset to carry a datasheet at docs/ai/datasets/<name>.md
+    documenting provenance, a bias examination, and representativeness.
+
+  rationale: |
+    Article 10 is the obligation spreadsheet-GRC handles worst and
+    as-code handles best: the evidence is technical (which datasets fed
+    which model, where they came from, whether they were examined for
+    bias) and it lives in the ML stack, not a policy binder. Binding each
+    high-risk model to a per-dataset datasheet turns "we have a data
+    governance policy" into a verifiable graph — every production model,
+    every dataset it was trained on, and the provenance + bias record for
+    each — that regenerates on every model release.
+
+  evidence:
+    - id: model_registry
+      source: mlflow
+      type: model_registry
+      fixture: ../tests/fixtures/models-with-datasets.json
+      params:
+        tracking_uri: ${env.MLFLOW_TRACKING_URI}
+
+    - id: dataset_docs
+      source: github
+      type: file_glob
+      fixture: ../tests/fixtures/dataset-docs-pass.json
+      params:
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/ai/datasets/*.md"
+        parse: frontmatter
+
+  policy:
+    engine: rego
+    package: concord.eu_ai_act.article_10
+    file: ../policies/article_10.rego
+
+  remediation:
+    runbook: docs/remediation/eu-ai-act-article-10.md
+    auto_fix: false
+    estimated_effort: 1d
+
+  mappings:
+    eu_ai_act:
+      - "Article-10"
+    iso42001:
+      - "7.4"
+      - "8.3"
+    nist_ai_rmf:
+      - "MAP-2.3"
+      - "MEASURE-2.6"
+
+  status: stable
+  blocking: true

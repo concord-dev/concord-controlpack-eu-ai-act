@@ -8,6 +8,7 @@ metadata:
 spec:
   controls:
     - EU-AIAct-Article9
+    - EU-AIAct-Article10
     - EU-AIAct-Article11
     - EU-AIAct-Article13
     - EU-AIAct-Article14

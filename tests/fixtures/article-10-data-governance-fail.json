@@ -1,0 +1,42 @@
+{
+  "model_registry": {
+    "tracking_uri": "https://mlflow.example.com",
+    "fetched_at": "2026-06-20T10:00:00Z",
+    "models": [
+      {
+        "name": "fraud-detector",
+        "version": "5",
+        "production": true,
+        "eu_ai_act_tier": "high",
+        "training_datasets": "creditcard-txns-2025, synthetic-fraud-aug",
+        "owner": "ml-platform",
+        "stage": "Production"
+      },
+      {
+        "name": "spam-classifier",
+        "version": "2",
+        "production": true,
+        "eu_ai_act_tier": "limited",
+        "owner": "trust-and-safety",
+        "stage": "Production"
+      }
+    ]
+  },
+  "dataset_docs": {
+    "scanned_paths": [
+      "docs/ai/datasets"
+    ],
+    "fetched_at": "2026-06-20T10:00:00Z",
+    "docs": [
+      {
+        "path": "docs/ai/datasets/creditcard-txns-2025.md",
+        "dataset": "creditcard-txns-2025",
+        "reviewer": "dana@example.com",
+        "provenance": "Internal transaction warehouse, 2024-01 to 2025-06, DPA-covered.",
+        "bias_evaluation": "Reweighted by region + card tier; disparate-impact ratio 0.91 (>0.8 threshold).",
+        "representativeness": "Covers all six operating regions in production traffic proportions.",
+        "known_limitations": "Under-samples prepaid cards (<2% of volume)."
+      }
+    ]
+  }
+}

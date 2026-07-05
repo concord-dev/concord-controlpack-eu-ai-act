@@ -1,0 +1,42 @@
+{
+  "model_registry": {
+    "tracking_uri": "https://mlflow.example.com",
+    "fetched_at": "2026-06-20T10:00:00Z",
+    "models": [
+      {
+        "name": "fraud-detector",
+        "version": "5",
+        "production": true,
+        "eu_ai_act_tier": "high",
+        "owner": "ml-platform",
+        "stage": "Production"
+      },
+      {
+        "name": "spam-classifier",
+        "version": "2",
+        "production": true,
+        "eu_ai_act_tier": "limited",
+        "owner": "trust-and-safety",
+        "stage": "Production"
+      }
+    ]
+  },
+  "risk_docs": {
+    "scanned_paths": [
+      "docs/ai/risk-management"
+    ],
+    "fetched_at": "2026-06-20T10:00:00Z",
+    "docs": [
+      {
+        "path": "docs/ai/risk-management/fraud-detector.md",
+        "model": "fraud-detector",
+        "reviewer": "alice@example.com",
+        "reviewed_at": "2026-06-15T00:00:00Z",
+        "hazards": "False-positive account freezes; demographic bias in flagging.",
+        "mitigations": "Human-in-the-loop review queue; quarterly fairness audit; appeal workflow.",
+        "residual_risk": "Accepted: <0.5% false-positive rate after review, signed off by Head of Risk.",
+        "post_market_monitoring": "Weekly drift + complaint-rate dashboard; incident runbook linked."
+      }
+    ]
+  }
+}

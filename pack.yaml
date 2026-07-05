@@ -7,6 +7,7 @@ metadata:
   framework_label: EU AI Act
 spec:
   controls:
+    - EU-AIAct-Article9
     - EU-AIAct-Article11
     - EU-AIAct-Article13
     - EU-AIAct-Article14

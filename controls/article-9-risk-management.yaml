@@ -1,0 +1,82 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: EU-AIAct-Article9
+  name: ai-risk-management-system
+  title: Every high-risk AI system has a documented, iterative risk-management record
+  framework: eu-ai-act
+  category: Provider obligations
+  severity: high
+  tags:
+    - ai
+    - eu-ai-act
+    - risk-management
+    - article-9
+  owners:
+    - team: ai-governance
+
+spec:
+  description: |
+    EU AI Act Article 9 requires providers of high-risk AI systems to
+    establish, implement, document and maintain a risk-management system
+    that runs as a continuous, iterative process across the whole
+    lifecycle. Concord enforces a Git-versioned risk-management record at
+    docs/ai/risk-management/<model>.md for every high-risk production
+    model. The record must identify hazards, the mitigations applied, and
+    the residual risk accepted, and it must be reviewed on a recurring
+    cadence so the process is demonstrably iterative rather than a
+    one-time launch artifact.
+
+  rationale: |
+    Article 9 is unusual in that it mandates a *process*, not a document —
+    risk identification, estimation, evaluation and mitigation repeated
+    "throughout the entire lifecycle." The auditable proxy for a living
+    process is a record that is (a) complete (hazards → mitigations →
+    residual risk), (b) attributable (a named reviewer), and (c) fresh
+    (reviewed within the review window). A stale or fieldless record is
+    the signature of a process that stopped after launch, which is exactly
+    the failure mode Article 9 is written against.
+
+  evidence:
+    - id: model_registry
+      source: mlflow
+      type: model_registry
+      fixture: ../tests/fixtures/models-with-high-risk.json
+      params:
+        tracking_uri: ${env.MLFLOW_TRACKING_URI}
+
+    - id: risk_docs
+      source: github
+      type: file_glob
+      fixture: ../tests/fixtures/risk-mgmt-docs-pass.json
+      params:
+        repo: ${env.CONCORD_REPO}
+        paths:
+          - "docs/ai/risk-management/*.md"
+        parse: frontmatter
+
+  policy:
+    engine: rego
+    package: concord.eu_ai_act.article_9
+    file: ../policies/article_9.rego
+
+  remediation:
+    runbook: docs/remediation/eu-ai-act-article-9.md
+    auto_fix: false
+    estimated_effort: 1d
+
+  mappings:
+    eu_ai_act:
+      - "Article-9"
+    iso42001:
+      - "6.1.2"
+      - "6.1.3"
+      - "8.2"
+    nist_ai_rmf:
+      - "MAP-1.1"
+      - "GOVERN-4.1"
+      - "MANAGE-1.1"
+
+  status: stable
+  blocking: true

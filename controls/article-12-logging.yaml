@@ -1,0 +1,77 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: EU-AIAct-Article12
+  name: logging-record-keeping
+  title: High-risk AI systems keep inference logs with adequate retention
+  framework: eu-ai-act
+  category: Provider obligations
+  severity: high
+  tags:
+    - ai
+    - eu-ai-act
+    - logging
+    - record-keeping
+    - article-12
+  owners:
+    - team: ai-governance
+
+spec:
+  description: |
+    EU AI Act Article 12 requires high-risk AI systems to technically
+    allow for the automatic recording of events (logs) over their
+    lifetime, to a degree appropriate to the intended purpose, ensuring
+    traceability. Concord checks that where high-risk models are in
+    production, log indexes exist and each retains records for at least
+    the record-keeping floor, so the traceability evidence an incident
+    investigation or a market-surveillance authority would demand is
+    actually being kept — not silently expired or rate-limited away.
+
+  rationale: |
+    Logging is the obligation that only bites after something goes wrong:
+    a contested decision, a drift incident, a regulator request. By then a
+    30-day retention window or an aggressive exclusion filter has already
+    destroyed the record. Checking retention configuration continuously —
+    against a floor, and flagging rate-limiting and exclusion filters that
+    quietly drop events — turns "we log everything" into a verifiable,
+    monitored property of the running system.
+
+  evidence:
+    - id: model_registry
+      source: mlflow
+      type: model_registry
+      fixture: ../tests/fixtures/models-with-high-risk.json
+      params:
+        tracking_uri: ${env.MLFLOW_TRACKING_URI}
+
+    - id: log_retention
+      source: datadog
+      type: datadog_log_retention
+      fixture: ../tests/fixtures/log-retention-pass.json
+      params:
+        min_retention_days: 180
+
+  policy:
+    engine: rego
+    package: concord.eu_ai_act.article_12
+    file: ../policies/article_12.rego
+
+  remediation:
+    runbook: docs/remediation/eu-ai-act-article-12.md
+    auto_fix: false
+    estimated_effort: 4h
+
+  mappings:
+    eu_ai_act:
+      - "Article-12"
+      - "Annex-IV"
+    iso42001:
+      - "8.4"
+      - "9.1"
+    nist_ai_rmf:
+      - "MEASURE-1.1"
+      - "MANAGE-4.1"
+
+  status: stable
+  blocking: true

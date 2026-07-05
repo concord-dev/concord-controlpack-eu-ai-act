@@ -1,0 +1,41 @@
+{
+  "model_registry": {
+    "tracking_uri": "https://mlflow.example.com",
+    "fetched_at": "2026-06-20T10:00:00Z",
+    "models": [
+      {
+        "name": "fraud-detector",
+        "version": "5",
+        "production": true,
+        "eu_ai_act_tier": "high",
+        "owner": "ml-platform",
+        "stage": "Production"
+      }
+    ]
+  },
+  "log_retention": {
+    "fetched_at": "2026-06-20T10:00:00Z",
+    "indexes": [
+      {
+        "name": "ai-inference",
+        "compliant": true,
+        "detail": {
+          "retention_days": 365,
+          "daily_limit": 50000000,
+          "is_rate_limited": false,
+          "exclusion_filters": 0
+        }
+      },
+      {
+        "name": "ai-audit",
+        "compliant": true,
+        "detail": {
+          "retention_days": 730,
+          "daily_limit": 10000000,
+          "is_rate_limited": false,
+          "exclusion_filters": 0
+        }
+      }
+    ]
+  }
+}

@@ -8,7 +8,7 @@ provider obligation and cross-maps to ISO/IEC 42001 and the NIST AI RMF.
 ## Install
 
 ```sh
-concord controlpack install ghcr.io/concord-dev/concord-controlpack-eu-ai-act:v0.3.0
+concord controlpack install ghcr.io/concord-dev/concord-controlpack-eu-ai-act:v0.4.0
 ```
 
 ## Controls
@@ -28,6 +28,11 @@ High-risk (Annex III) provider obligations:
 Every control is fixture-tested (`concord control lint`) and scopes only to
 production models tagged `eu_ai_act_tier: high` in the model registry, so
 limited- and minimal-risk systems are not flagged.
+
+The model-scoped controls (Art. 9/11/13/14/15) emit **one finding per AI system**
+(keyed by model name) so `concord plan` and the Annex IV report show conformance
+per system, not just per obligation. Art. 10 (per training dataset) and Art. 12
+(per log index) are evaluated at the control level.
 
 ## Evidence sources
 

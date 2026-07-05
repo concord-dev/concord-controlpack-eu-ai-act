@@ -68,6 +68,45 @@ warn contains msg if {
     msg := sprintf("high-risk model %q evaluation run has no adversarial-robustness testing (recommended by Article 15)", [model.name])
 }
 
+# Per-AI-system emission: one verdict per high-risk production model, keyed by
+# model name. Keeps the deny/warn contract above for validate; powers per-system
+# conformance in `concord plan` and the Annex IV per-system table.
+resource_findings contains verdict if {
+    some model in input.model_registry.models
+    is_high_risk_prod(model)
+    msgs := model_denials(model)
+    count(msgs) > 0
+    verdict := {"resource": model.name, "status": "fail", "messages": sort([m | some m in msgs])}
+}
+
+resource_findings contains verdict if {
+    some model in input.model_registry.models
+    is_high_risk_prod(model)
+    count(model_denials(model)) == 0
+    verdict := {"resource": model.name, "status": "pass", "messages": []}
+}
+
+model_denials(model) := no_eval | low_accuracy | no_robustness | no_security if {
+    no_eval := {msg |
+        not has_eval(model.name)
+        msg := "no evaluation run recorded in W&B"
+    }
+    low_accuracy := {msg |
+        has_eval(model.name)
+        not accuracy_ok(model.name)
+        msg := sprintf("no evaluation run meeting the %v accuracy threshold", [min_accuracy])
+    }
+    no_robustness := {msg |
+        has_eval(model.name)
+        not robustness_ok(model.name)
+        msg := "no robustness-testing evidence in evaluation run"
+    }
+    no_security := {msg |
+        not has_value(model, "cybersecurity_assessment")
+        msg := "no cybersecurity_assessment recorded"
+    }
+}
+
 is_high_risk_prod(model) if {
     model.production == true
     model.eu_ai_act_tier == "high"

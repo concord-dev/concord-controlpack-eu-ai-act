@@ -3,7 +3,7 @@ kind: ControlPack
 metadata:
   id: eu-ai-act
   name: eu-ai-act
-  version: v0.3.0
+  version: v0.4.0
   framework_label: EU AI Act
 spec:
   controls:

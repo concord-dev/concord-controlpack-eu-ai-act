@@ -59,6 +59,45 @@ warn contains msg if {
     msg := sprintf("technical doc %q has no accuracy_metrics field (recommended by Annex IV §3)", [doc.path])
 }
 
+# Per-AI-system emission: one verdict per high-risk production model, keyed by
+# model name. Keeps the deny/warn contract above for validate; powers per-system
+# conformance in `concord plan` and the Annex IV per-system table.
+resource_findings contains verdict if {
+    some model in input.model_registry.models
+    is_high_risk_prod(model)
+    msgs := model_denials(model)
+    count(msgs) > 0
+    verdict := {"resource": model.name, "status": "fail", "messages": sort([m | some m in msgs])}
+}
+
+resource_findings contains verdict if {
+    some model in input.model_registry.models
+    is_high_risk_prod(model)
+    count(model_denials(model)) == 0
+    verdict := {"resource": model.name, "status": "pass", "messages": []}
+}
+
+model_denials(model) := no_doc | missing_fields | stale if {
+    no_doc := {msg |
+        not has_doc(model.name)
+        msg := "no technical documentation under docs/ai/technical-documentation/"
+    }
+    missing_fields := {msg |
+        some doc in input.technical_docs.docs
+        doc.model == model.name
+        some field in required_frontmatter
+        not has_value(doc, field)
+        msg := sprintf("technical doc missing required field %q", [field])
+    }
+    stale := {msg |
+        some doc in input.technical_docs.docs
+        doc.model == model.name
+        doc.reviewed_at
+        time.parse_rfc3339_ns(doc.reviewed_at) < time.now_ns() - (max_age_days * nanos_per_day)
+        msg := sprintf("technical doc not reviewed in over %d days", [max_age_days])
+    }
+}
+
 is_high_risk_prod(model) if {
     model.production == true
     model.eu_ai_act_tier == "high"

@@ -61,6 +61,46 @@ warn contains msg if {
     msg := sprintf("risk-management record %q has no post_market_monitoring field (Article 9(2)(d))", [doc.path])
 }
 
+# Per-AI-system emission: one verdict per high-risk production model, keyed by
+# model name (the AI system's resource id). Keeps the deny/warn contract above
+# for validate + control-level engines; this powers per-system conformance in
+# `concord plan` and the Annex IV per-system table.
+resource_findings contains verdict if {
+    some model in input.model_registry.models
+    is_high_risk_prod(model)
+    msgs := model_denials(model)
+    count(msgs) > 0
+    verdict := {"resource": model.name, "status": "fail", "messages": sort([m | some m in msgs])}
+}
+
+resource_findings contains verdict if {
+    some model in input.model_registry.models
+    is_high_risk_prod(model)
+    count(model_denials(model)) == 0
+    verdict := {"resource": model.name, "status": "pass", "messages": []}
+}
+
+model_denials(model) := no_record | missing_fields | stale if {
+    no_record := {msg |
+        not has_record(model.name)
+        msg := "no risk-management record under docs/ai/risk-management/"
+    }
+    missing_fields := {msg |
+        some doc in input.risk_docs.docs
+        doc.model == model.name
+        some field in required_frontmatter
+        not has_value(doc, field)
+        msg := sprintf("record missing required field %q", [field])
+    }
+    stale := {msg |
+        some doc in input.risk_docs.docs
+        doc.model == model.name
+        doc.reviewed_at
+        time.parse_rfc3339_ns(doc.reviewed_at) < time.now_ns() - (max_age_days * nanos_per_day)
+        msg := sprintf("record not reviewed in over %d days", [max_age_days])
+    }
+}
+
 is_high_risk_prod(model) if {
     model.production == true
     model.eu_ai_act_tier == "high"

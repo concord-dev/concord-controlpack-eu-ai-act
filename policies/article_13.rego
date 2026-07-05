@@ -32,6 +32,27 @@ warn contains msg if {
     msg := sprintf("model card %q is missing limitations section", [doc.path])
 }
 
+# Per-AI-system emission: one verdict per high-risk production model, keyed by
+# model name. Keeps the deny/warn contract above for validate; powers per-system
+# conformance in `concord plan` and the Annex IV per-system table.
+resource_findings contains verdict if {
+    some model in input.model_registry.models
+    is_high_risk_prod(model)
+    not has_published_card(model)
+    verdict := {
+        "resource": model.name,
+        "status": "fail",
+        "messages": ["no public_model_card_url tag nor docs/ai/model-cards/<model>.md"],
+    }
+}
+
+resource_findings contains verdict if {
+    some model in input.model_registry.models
+    is_high_risk_prod(model)
+    has_published_card(model)
+    verdict := {"resource": model.name, "status": "pass", "messages": []}
+}
+
 is_high_risk_prod(model) if {
     model.production == true
     model.eu_ai_act_tier == "high"

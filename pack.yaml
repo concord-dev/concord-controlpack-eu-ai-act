@@ -3,7 +3,7 @@ kind: ControlPack
 metadata:
   id: eu-ai-act
   name: eu-ai-act
-  version: v0.2.0
+  version: v0.3.0
   framework_label: EU AI Act
 spec:
   controls:
@@ -18,4 +18,8 @@ spec:
     - source: github
       version: ">=v0.1.0,<v1.0.0"
     - source: mlflow
+      version: ">=v0.1.0,<v1.0.0"
+    - source: wandb
+      version: ">=v0.1.0,<v1.0.0"
+    - source: datadog
       version: ">=v0.1.0,<v1.0.0"

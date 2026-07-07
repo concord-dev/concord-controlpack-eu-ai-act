@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# A control pack ships only if it is real: every control must schema-check,
+# compile its Rego, and replay a pass AND a fail fixture. `concord control lint`
+# enforces exactly that, so it gates every push and PR — and the release
+# workflow re-runs it before publishing (a pack that fails lint cannot release).
+jobs:
+  lint:
+    name: control lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.11'
+
+      - name: install concord
+        run: go install github.com/concord-dev/concord/cmd/concord@v0.1.0
+
+      - name: concord control lint
+        run: |
+          export PATH="$(go env GOPATH)/bin:$PATH"
+          concord control lint .

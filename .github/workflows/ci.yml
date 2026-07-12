@@ -13,6 +13,8 @@ concurrency:
 # compile its Rego, and replay a pass AND a fail fixture. `concord control lint`
 # enforces exactly that, so it gates every push and PR — and the release
 # workflow re-runs it before publishing (a pack that fails lint cannot release).
+# Regal (the Rego linter) additionally gates the policy code for bugs; its
+# tuned ruleset lives in .regal/config.yaml.
 jobs:
   lint:
     name: control lint
@@ -30,3 +32,11 @@ jobs:
         run: |
           export PATH="$(go env GOPATH)/bin:$PATH"
           concord control lint .
+
+      - name: install regal
+        run: go install github.com/open-policy-agent/regal@v0.41.1
+
+      - name: regal lint (rego)
+        run: |
+          export PATH="$(go env GOPATH)/bin:$PATH"
+          regal lint policies

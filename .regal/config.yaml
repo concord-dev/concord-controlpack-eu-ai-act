@@ -1,0 +1,31 @@
+# Regal config for Concord control packs.
+# Rules below are tuned out because they conflict with the pack conventions,
+# not because the code is wrong; every other Regal rule stays active and gates
+# CI (so real bugs like var-shadows-builtin / time-now-ns-twice are caught).
+rules:
+  style:
+    line-length:
+      level: ignore            # sprintf deny/warn messages are intentionally long + descriptive
+    opa-fmt:
+      level: ignore            # formatting is not enforced across reused/generated regos
+    unconditional-assignment:
+      level: ignore
+    default-over-else:
+      level: ignore
+    pointless-reassignment:
+      level: ignore
+  performance:
+    non-loop-expression:
+      level: ignore
+  idiomatic:
+    equals-pattern-matching:
+      level: ignore
+    directory-package-mismatch:
+      level: ignore            # all control regos live flat in policies/, package is concord.<fw>.<id>
+    no-defined-entrypoint:
+      level: ignore            # deny/warn rule packs have no single entrypoint annotation
+  bugs:
+    leaked-internal-reference:
+      level: ignore            # input._concord.params is the engine-injected params contract, not a leak
+    redundant-existence-check:
+      level: ignore

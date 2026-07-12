@@ -37,7 +37,7 @@ jobs:
           cosign-release: v2.4.0
 
       - name: Pack contents
-        run: tar -czf controlpack.tar.gz pack.yaml controls policies tests
+        run: tar -czf controlpack.tar.gz pack.yaml controls policies tests docs evidence-types
 
       - name: Login to ghcr.io
         run: echo "${{ secrets.GITHUB_TOKEN }}" | oras login -u ${{ github.actor }} --password-stdin "${REGISTRY}"

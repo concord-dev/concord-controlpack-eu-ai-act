@@ -26,7 +26,7 @@ jobs:
           go-version: '1.25.11'
 
       - name: install concord
-        run: go install github.com/concord-dev/concord/cmd/concord@v0.1.0
+        run: go install github.com/concord-dev/concord/cmd/concord@v0.2.0
 
       - name: concord control lint
         run: |

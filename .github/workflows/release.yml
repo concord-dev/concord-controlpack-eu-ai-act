@@ -22,7 +22,7 @@ jobs:
         with:
           go-version: '1.25.11'
       - name: install concord
-        run: go install github.com/concord-dev/concord/cmd/concord@v0.1.0
+        run: go install github.com/concord-dev/concord/cmd/concord@v0.2.0
       - name: control lint (gate — a pack that fails lint cannot release)
         run: |
           export PATH="$(go env GOPATH)/bin:$PATH"
